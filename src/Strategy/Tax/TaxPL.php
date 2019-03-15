@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Helper\Tax;
-
+namespace App\Strategy\Tax;
 
 /**
- * Class TaxForeign
+ * Class TaxPL
  * @package App\Helper\Tax
  */
-class TaxForeign implements TaxInterface
+class TaxPL implements TaxInterface
 {
     /**
      * @param $net

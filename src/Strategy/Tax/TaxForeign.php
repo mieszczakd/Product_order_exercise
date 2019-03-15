@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Helper\Tax;
+namespace App\Strategy\Tax;
+
 
 /**
- * Class TaxPL
+ * Class TaxForeign
  * @package App\Helper\Tax
  */
-class TaxPL implements TaxInterface
+class TaxForeign implements TaxInterface
 {
     /**
      * @param $net
@@ -14,6 +15,6 @@ class TaxPL implements TaxInterface
      */
     public function count($net)
     {
-        return 0.23 * $net;
+        return 0;
     }
 }

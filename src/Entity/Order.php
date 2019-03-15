@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use App\Helper\Tax\TaxForeign;
-use App\Helper\Tax\TaxInterface;
-use App\Helper\Tax\TaxPL;
+use App\Helper\Country;
+use App\Strategy\Tax\TaxForeign;
+use App\Strategy\Tax\TaxInterface;
+use App\Strategy\Tax\TaxPL;
 
 
 /**
@@ -35,6 +36,8 @@ class Order extends Timestampable
     private $tax;
 
     /**
+     * @todo implement unique number
+     *
      * @var string
      */
     private $number;
@@ -57,12 +60,12 @@ class Order extends Timestampable
         $this->quantity = $quantity;
 
         if ($quantity > $product->getQuantity()) {
-            throw new \InvalidArgumentException('');
+            throw new \InvalidArgumentException('Product is not available with provided quantity');
         }
 
         $product->orderQuantity($quantity);
 
-        if ($country === 'PL') {
+        if ($country === Country::PL) {
             $this->tax = new TaxPL();
         } else {
             $this->tax = new TaxForeign();
@@ -112,7 +115,7 @@ class Order extends Timestampable
     /**
      * @return float
      */
-    private function getTax(): float
+    public function getTax(): float
     {
         return $this->tax->count( $this->getTotalNet() );
     }

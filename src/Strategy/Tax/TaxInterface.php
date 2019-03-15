@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Helper\Tax;
+namespace App\Strategy\Tax;
 
 
 /**
