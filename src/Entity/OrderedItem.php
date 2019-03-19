@@ -11,7 +11,7 @@ class OrderedItem
 {
 
     /**
-     * @var Product
+     * @var Product|null
      */
     private $product;
 
@@ -28,15 +28,17 @@ class OrderedItem
 
     /**
      * OrderedItem constructor.
-     * @param Product $product
+     * @param Product|null $product
      * @param int $quantity
      */
-    public function __construct(Product $product, int $quantity)
+    public function __construct(?Product $product, int $quantity)
     {
         $this->product  = $product;
         $this->quantity = $quantity;
 
-        if ($quantity > $product->getQuantity()) {
+        if (null === $product) {
+            $this->addError('Product is not available');
+        } elseif ($quantity > $product->getQuantity()) {
             $this->addError('Product is not available with provided quantity');
         }
     }

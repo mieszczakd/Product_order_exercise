@@ -2,7 +2,11 @@
 
 namespace App\Service;
 
+use App\Collection\OrderedItemsCollection;
+use App\Entity\Cart;
+use App\Entity\Customer;
 use App\Entity\Order;
+use App\Entity\OrderedItem;
 use App\Manager\OrderManager;
 use App\Repository\ProductRepository;
 
@@ -33,6 +37,35 @@ class OrderService
         $this->orderManager      = $manager;
         $this->productRepository = $productRepository;
     }
+
+    /**
+     * @param Customer $customer
+     * @return Cart
+     */
+    public function createEmptyCart(Customer $customer): Cart
+    {
+        return new Cart($customer, new OrderedItemsCollection([]));
+    }
+
+    public function addItems(Cart $cart, array $items)
+    {
+        $ids = array_map(function ($item) {
+            return $item['id'];
+        }, $items);
+
+        $products = $this->productRepository->findByIds($ids);
+
+        foreach ($items as $item) {
+            $product = null;
+            if (array_key_exists($item['id'], $products)) {
+                $product = $products[$item['id']];
+            }
+
+            $cart->addItem( new OrderedItem($product, $item['quantity']) );
+        }
+        return $cart;
+    }
+
 
     /**
      * @param $productId
