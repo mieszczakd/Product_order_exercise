@@ -20,6 +20,7 @@ class Product extends Timestampable
     private $name;
 
     /**
+     * //Zbędny opis
      * (decimal, precision=9, scale=3)
      *
      * @var float
@@ -118,6 +119,7 @@ class Product extends Timestampable
      * @param int $orderedQuantity
      * @throws \Exception
      */
+     // W innym miejscu już skomentowałem Ci nazwę tej metody
     public function orderQuantity(int $orderedQuantity)
     {
         $this->quantity  = $this->quantity - $orderedQuantity;

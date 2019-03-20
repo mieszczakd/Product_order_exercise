@@ -12,6 +12,9 @@ use App\Entity\Product;
 class ProductRepository
 {
 
+    // Implementacja jest zbędna dla repozytorium
+    // Dla celów testowych wystarczyłby interface. Impementacja i tak będzie związana z jakąś konkretną biblioteką, np. Doctrinem
+
     /**
      * @param int $productId
      * @return Product|null
@@ -20,6 +23,8 @@ class ProductRepository
     {
         $testProducts = $this->getTestProducts();
 
+        // Jeśli już $productId === indeks elementu w tablicy, to zadeklaruj go jawnie
+        // Teraz masz ID == 0 :)
         return array_key_exists($productId, $testProducts) ? $testProducts[$productId]: null;
     }
 

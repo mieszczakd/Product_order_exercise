@@ -5,6 +5,8 @@ namespace App\Entity;
 /**
  * @package App\Entity
  */
+
+// Nie klasa, a interface!!!!
 abstract class Timestampable
 {
 
