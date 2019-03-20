@@ -2,25 +2,15 @@
 
 namespace App\Entity;
 
+
 /**
+ * Interface Timestampable
  * @package App\Entity
  */
-abstract class Timestampable
+interface Timestampable
 {
-
     /**
-     * @var \DateTime
+     * @return \DateTime
      */
-    private $createdAt;
-
-    /**
-     * Timestampable constructor.
-     *
-     * @throws \Exception
-     */
-    public function __construct()
-    {
-        $this->createdAt = new \DateTime();
-    }
-
+    public function getCreatedAt(): \DateTime;
 }

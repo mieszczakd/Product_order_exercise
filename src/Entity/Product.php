@@ -6,7 +6,7 @@ namespace App\Entity;
  * Class Product
  * @package App\Entity
  */
-class Product extends Timestampable
+class Product implements Timestampable
 {
 
     /**
@@ -20,15 +20,11 @@ class Product extends Timestampable
     private $name;
 
     /**
-     * (decimal, precision=9, scale=3)
-     *
      * @var float
      */
     private $price;
 
     /**
-     * (decimal, precision=5, scale=3)
-     *
      * @var float
      */
     private $vat;
@@ -37,6 +33,11 @@ class Product extends Timestampable
      * @var int
      */
     private $quantity;
+
+    /**
+     * @var \DateTime
+     */
+    private $createdAt;
 
     /**
      * @var \DateTime|null
@@ -56,12 +57,11 @@ class Product extends Timestampable
      */
     public function __construct(string $name, float $price, float $vat, int $quantity)
     {
-        parent::__construct();
-
-        $this->name     = $name;
-        $this->price    = $price;
-        $this->vat      = $vat;
-        $this->quantity = $quantity;
+        $this->name      = $name;
+        $this->price     = $price;
+        $this->vat       = $vat;
+        $this->quantity  = $quantity;
+        $this->createdAt = new \DateTime();
     }
 
     /**
@@ -113,12 +113,18 @@ class Product extends Timestampable
     }
 
     /**
-     * Lower quantity from order
-     *
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
      * @param int $orderedQuantity
      * @throws \Exception
      */
-    public function orderQuantity(int $orderedQuantity)
+    public function reduceQuantity(int $orderedQuantity)
     {
         $this->quantity  = $this->quantity - $orderedQuantity;
         $this->updatedAt = new \DateTime();

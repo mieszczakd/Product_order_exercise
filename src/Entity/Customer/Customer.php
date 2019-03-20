@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Customer;
 
-use App\Entity\Customer\CustomerInterface;
+use App\Entity\Address\AddressInterface;
 use App\Entity\Tax\TaxForeign;
 use App\Entity\Tax\TaxInterface;
 use App\Entity\Tax\TaxPL;
-use App\Helper\Country;
 
 
 /**
  * Class Order
  * @package App\Entity
  */
-class Customer implements CustomerInterface
+class Customer implements AddressInterface, CustomerInterface
 {
     /**
      * @var string
@@ -43,7 +42,7 @@ class Customer implements CustomerInterface
     /**
      * @var TaxInterface
      */
-    private $tax;
+    private $taxStrategy;
 
 
     /**
@@ -62,10 +61,10 @@ class Customer implements CustomerInterface
         $this->city    = $city;
         $this->country = $country;
 
-        if ($country === Country::PL) {
-            $this->tax = new TaxPL();
+        if ($country === self::PL) {
+            $this->taxStrategy = new TaxPL();
         } else {
-            $this->tax = new TaxForeign();
+            $this->taxStrategy = new TaxForeign();
         }
     }
 

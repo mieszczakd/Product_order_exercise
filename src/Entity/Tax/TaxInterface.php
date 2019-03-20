@@ -5,15 +5,16 @@ namespace App\Entity\Tax;
 
 /**
  * Interface TaxInterface
- * @package App\Helper\Tax
+ * @package App\Entity\Tax
  */
 interface TaxInterface
 {
     /**
      * Counts tax amount
      *
-     * @param $net
+     * @param float $net
+     * @param float $vat
      * @return float
      */
-    public function count($net);
+    public function calculate(float $net, float $vat): float;
 }

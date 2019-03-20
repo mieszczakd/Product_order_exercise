@@ -5,15 +5,16 @@ namespace App\Entity\Tax;
 
 /**
  * Class TaxForeign
- * @package App\Helper\Tax
+ * @package App\Entity\Tax
  */
 class TaxForeign implements TaxInterface
 {
     /**
-     * @param $net
+     * @param float $net
+     * @param float $vat
      * @return float
      */
-    public function count($net)
+    public function calculate(float $net, float $vat): float
     {
         return 0;
     }

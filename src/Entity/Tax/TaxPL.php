@@ -2,18 +2,20 @@
 
 namespace App\Entity\Tax;
 
+
 /**
  * Class TaxPL
- * @package App\Helper\Tax
+ * @package App\Entity\Tax
  */
 class TaxPL implements TaxInterface
 {
     /**
-     * @param $net
+     * @param float $net
+     * @param float $vat
      * @return float
      */
-    public function count($net)
+    public function calculate(float $net, float $vat): float
     {
-        return 0.23 * $net;
+        return round(0.23 * $net, 2);
     }
 }

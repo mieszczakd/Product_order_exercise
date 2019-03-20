@@ -77,4 +77,12 @@ class Collection implements \Countable, \ArrayAccess, \IteratorAggregate
     {
         $this->collection[] = $item;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return $this->collection;
+    }
 }

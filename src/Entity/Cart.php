@@ -3,13 +3,14 @@
 namespace App\Entity;
 
 use App\Collection\OrderedItemsCollection;
+use App\Entity\Customer\Customer;
 
 
 /**
  * Class Cart
  * @package App\Entity
  */
-class Cart
+class Cart implements TotalInterface
 {
     /**
      * @var Customer
@@ -31,6 +32,22 @@ class Cart
     {
         $this->customer               = $customer;
         $this->orderedItemsCollection = $collection;
+    }
+
+    /**
+     * @return Customer
+     */
+    public function getCustomer(): Customer
+    {
+        return $this->customer;
+    }
+
+    /**
+     * @return OrderedItemsCollection
+     */
+    public function getOrderedItemsCollection(): OrderedItemsCollection
+    {
+        return $this->orderedItemsCollection;
     }
 
     /**
@@ -63,5 +80,48 @@ class Cart
     {
         return 0 === $this->orderedItemsCollection->count();
     }
+
+    /**
+     * @return float
+     */
+    public function getTotalNet(): float
+    {
+        $total = 0;
+        foreach ($this->orderedItemsCollection as $orderedItem) {
+            /** @var OrderedItem $orderedItem */
+            $total += $orderedItem->getTotalNet();
+        }
+
+        return $total;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalGross(): float
+    {
+        $total = 0;
+        foreach ($this->orderedItemsCollection as $orderedItem) {
+            /** @var OrderedItem $orderedItem */
+            $total += $orderedItem->getTotalGross();
+        }
+
+        return $total;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTaxPrice(): float
+    {
+        $total = 0;
+        foreach ($this->orderedItemsCollection as $orderedItem) {
+            /** @var OrderedItem $orderedItem */
+            $total += $orderedItem->getTaxPrice();
+        }
+
+        return $total;
+    }
+
 
 }
