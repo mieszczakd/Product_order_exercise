@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Collection\OrderedItemsCollection;
-use App\Entity\Customer\Customer;
+use App\Entity\Customer;
 
 
 /**

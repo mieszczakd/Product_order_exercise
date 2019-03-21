@@ -7,7 +7,7 @@ namespace App\Entity\Tax;
  * Class TaxForeign
  * @package App\Entity\Tax
  */
-class TaxForeign implements TaxInterface
+class TaxNP implements TaxInterface
 {
     /**
      * @param float $net

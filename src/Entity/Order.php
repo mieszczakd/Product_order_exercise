@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Entity;
+
 use App\Collection\OrderedItemsCollection;
-use App\Entity\Customer\Customer;
+use App\Entity\Customer;
 use App\Exception\EmptyCartException;
 use App\Exception\InvalidCartException;
 
@@ -148,6 +149,6 @@ class Order implements Timestampable, TotalInterface
      */
     private function generateNumber(): string
     {
-        // TODO: Implement generateNumber() method.
+        return '';
     }
 }

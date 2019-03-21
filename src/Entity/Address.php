@@ -1,23 +1,24 @@
 <?php
 
-namespace App\Entity\Customer;
+namespace App\Entity;
 
 use App\Entity\Address\AddressInterface;
-use App\Entity\Tax\TaxForeign;
+use App\Entity\Tax\TaxNP;
 use App\Entity\Tax\TaxInterface;
 use App\Entity\Tax\TaxPL;
 
 
 /**
- * Class Order
+ * Class Address
  * @package App\Entity
  */
-class Customer implements AddressInterface, CustomerInterface
+class Address implements AddressInterface
 {
+
     /**
-     * @var string
+     * @var int
      */
-    private $email;
+    private $id;
 
     /**
      * @var string
@@ -46,43 +47,39 @@ class Customer implements AddressInterface, CustomerInterface
 
 
     /**
-     * Customer constructor.
-     * @param string $email
+     * Address constructor.
      * @param string $street
      * @param string $zip
      * @param string $city
      * @param string $country
      */
-    public function __construct(string $email, string $street, string $zip, string $city, string $country)
+    public function __construct(string $street, string $zip, string $city, string $country)
     {
-        $this->email   = $email;
         $this->street  = $street;
         $this->zip     = $zip;
         $this->city    = $city;
         $this->country = $country;
 
-        if ($country === self::PL) {
-            $this->taxStrategy = new TaxPL();
-        } else {
-            $this->taxStrategy = new TaxForeign();
+        $this->chooseTaxStrategy();
+    }
+
+    private function chooseTaxStrategy()
+    {
+        switch ($this->country) {
+            case self::PL:
+                $this->taxStrategy = new TaxPL();
+                break;
+            default:
+                $this->taxStrategy = new TaxNP();
         }
     }
 
     /**
-     * @param $net
-     * @return float
+     * @return int
      */
-    public function getTaxPrice($net): float
+    public function getId(): int
     {
-        return $this->tax->count($net);
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmail(): string
-    {
-        return $this->email;
+        return $this->id;
     }
 
     /**
@@ -117,4 +114,11 @@ class Customer implements AddressInterface, CustomerInterface
         return $this->country;
     }
 
+    /**
+     * @return TaxInterface
+     */
+    public function getTaxStrategy(): TaxInterface
+    {
+        return $this->taxStrategy;
+    }
 }
