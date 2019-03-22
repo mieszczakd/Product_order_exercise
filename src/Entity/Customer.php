@@ -4,6 +4,7 @@ namespace App\Entity;
 
 
 use App\Entity\Tax\TaxInterface;
+use App\Exception\InvalidEmailException;
 
 /**
  * Class Customer
@@ -26,9 +27,15 @@ class Customer
      * Customer constructor.
      * @param string $email
      * @param Address $address
+     *
+     * @throws InvalidEmailException
      */
     public function __construct(string $email, Address $address)
     {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidEmailException();
+        }
+
         $this->email   = $email;
         $this->address = $address;
     }
