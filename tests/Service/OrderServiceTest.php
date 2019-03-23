@@ -35,9 +35,18 @@ class OrderServiceTest extends TestCase
      */
     public function testOrderByPolishCitizen($productId, $quantity, $country)
     {
+
+        // Usługa powinna otrzymywać Product, a nie jego
+        // Rozumiem również, że robisz najprostszą implementację, ale założenie jednego produktu przekazywanego na start do usługi, z góry jest błędne
         $order   = $this->orderService->order($productId, $quantity, $country);
+
+        // Masz zaimplementowane repozytorium produktów - powinieneś oprzeć się tutaj na interfaceie a nie nie konkretnej implementacji
+        // Idealnie w tym miejscu sprawdziłby się testing double - mock, który zwróciłby Ci dla danego ID obiekt Produktu
         $product = $this->productRepository->find($productId);
 
+        // Te wartości muszą być w teście zdefiniowane, a nie wyliczane
+        // To co robisz poniżej to wykonywanie kodu, który de facto testujesz.
+        // Dublowanie kodu testowanego w teście jest jednym z grzechów głównych testów
         $netAmount   = $quantity * $product->getPrice();
         $tax         = ($quantity * $product->getPrice()) * 0.23;
         $grossAmount = ($quantity * $product->getPrice()) + ($quantity * $product->getPrice()) * 0.23;
@@ -72,6 +81,8 @@ class OrderServiceTest extends TestCase
 
     public function testExceptionIfProductIsNotAvailableWithProvidedQuantity()
     {
+        // Dla własnych błędów domenowych warto tworzyć własną klasę wyjątków.
+        // Łatwiej dorobić później globalne mechanizmy obsługi błędów, np. logowanie lub tranformowanie w response
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Product is not available with provided quantity');
         $order = $this->orderService->order(2, 120, Country::PL);
