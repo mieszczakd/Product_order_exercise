@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 use App\Entity\Tax\TaxInterface;
+use App\Exception\ProductNegativeQuantityException;
 
 
 /**
@@ -22,6 +23,11 @@ class OrderedItem implements TotalInterface
     private $quantity;
 
     /**
+     * @var Customer
+     */
+    private $customer;
+
+    /**
      * @var TaxInterface
      */
     private $taxStrategy;
@@ -36,18 +42,23 @@ class OrderedItem implements TotalInterface
      * OrderedItem constructor.
      * @param Product|null $product
      * @param int $quantity
-     * @param TaxInterface $tax
+     * @param Customer $customer
      */
-    public function __construct(?Product $product, int $quantity, TaxInterface $tax)
+    public function __construct(?Product $product, int $quantity, Customer $customer)
     {
         $this->product     = $product;
         $this->quantity    = $quantity;
-        $this->taxStrategy = $tax;
+        $this->customer    = $customer;
+        $this->taxStrategy = $customer->getTaxStrategy();
 
         if (null === $product) {
             $this->addError('Product is not available');
         } elseif ($quantity > $product->getQuantity()) {
             $this->addError('Product is not available with provided quantity');
+        }
+        if ($quantity < 0) {
+            $this->addError('Cannot order product with negative quantity');
+//            throw new ProductNegativeQuantityException('Cannot order product with negative quantity');
         }
     }
 
@@ -107,5 +118,11 @@ class OrderedItem implements TotalInterface
         $this->errors[] = $error;
     }
 
-
+    /**
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
 }

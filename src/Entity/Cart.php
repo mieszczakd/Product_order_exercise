@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Collection\OrderedItemsCollection;
-use App\Entity\Customer;
 
 
 /**
@@ -26,12 +25,11 @@ class Cart implements TotalInterface
     /**
      * Cart constructor.
      * @param Customer $customer
-     * @param OrderedItemsCollection $collection
      */
-    public function __construct(Customer $customer, OrderedItemsCollection $collection)
+    public function __construct(Customer $customer)
     {
         $this->customer               = $customer;
-        $this->orderedItemsCollection = $collection;
+        $this->orderedItemsCollection = new OrderedItemsCollection([]);
     }
 
     /**

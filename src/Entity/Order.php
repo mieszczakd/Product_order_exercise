@@ -36,13 +36,6 @@ class Order implements Timestampable, TotalInterface
     private $customer;
 
     /**
-     * @todo implement unique number
-     *
-     * @var string
-     */
-    private $number;
-
-    /**
      * @var \DateTime
      */
     private $createdAt;
@@ -69,7 +62,6 @@ class Order implements Timestampable, TotalInterface
         $this->orderedItemsCollection = $cart->getOrderedItemsCollection();
 
         $this->createdAt = new \DateTime();
-        $this->number    = $this->generateNumber();
     }
 
     /**
@@ -144,11 +136,4 @@ class Order implements Timestampable, TotalInterface
         return $this->cart->getTaxPrice();
     }
 
-    /**
-     * @return string
-     */
-    private function generateNumber(): string
-    {
-        return '';
-    }
 }
