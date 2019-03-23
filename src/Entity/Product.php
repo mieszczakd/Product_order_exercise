@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use App\Exception\InvalidVatException;
+use App\Exception\ProductNegativeQuantityException;
+
 /**
  * Class Product
  * @package App\Entity
  */
-class Product extends Timestampable
+class Product implements Timestampable
 {
 
     /**
@@ -20,16 +23,11 @@ class Product extends Timestampable
     private $name;
 
     /**
-     * //Zbędny opis
-     * (decimal, precision=9, scale=3)
-     *
      * @var float
      */
     private $price;
 
     /**
-     * (decimal, precision=5, scale=3)
-     *
      * @var float
      */
     private $vat;
@@ -38,6 +36,11 @@ class Product extends Timestampable
      * @var int
      */
     private $quantity;
+
+    /**
+     * @var \DateTime
+     */
+    private $createdAt;
 
     /**
      * @var \DateTime|null
@@ -57,12 +60,18 @@ class Product extends Timestampable
      */
     public function __construct(string $name, float $price, float $vat, int $quantity)
     {
-        parent::__construct();
+        if ($quantity < 0) {
+            throw new ProductNegativeQuantityException('Cannot create product with negative quantity');
+        }
+        if ($vat < 0 || $vat > 1) {
+            throw new InvalidVatException('Vat value should be between 0 and 1');
+        }
 
-        $this->name     = $name;
-        $this->price    = $price;
-        $this->vat      = $vat;
-        $this->quantity = $quantity;
+        $this->name      = $name;
+        $this->price     = $price;
+        $this->vat       = $vat;
+        $this->quantity  = $quantity;
+        $this->createdAt = new \DateTime();
     }
 
     /**
@@ -114,14 +123,23 @@ class Product extends Timestampable
     }
 
     /**
-     * Lower quantity from order
-     *
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
      * @param int $orderedQuantity
      * @throws \Exception
      */
-     // W innym miejscu już skomentowałem Ci nazwę tej metody
-    public function orderQuantity(int $orderedQuantity)
+    public function reduceQuantity(int $orderedQuantity)
     {
+        if ($this->quantity < $orderedQuantity) {
+            throw new ProductNegativeQuantityException('Cannot reduce product quantity to negative value');
+        }
+
         $this->quantity  = $this->quantity - $orderedQuantity;
         $this->updatedAt = new \DateTime();
     }

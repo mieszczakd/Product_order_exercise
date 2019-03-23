@@ -2,18 +2,17 @@
 
 namespace App\Entity;
 
-use App\Helper\Country;
-use App\Strategy\Tax\TaxForeign;
-use App\Strategy\Tax\TaxInterface;
-use App\Strategy\Tax\TaxPL;
+use App\Collection\OrderedItemsCollection;
+use App\Entity\Customer;
+use App\Exception\EmptyCartException;
+use App\Exception\InvalidCartException;
 
 
 /**
  * Class Order
  * @package App\Entity
  */
- // implements
-class Order extends Timestampable
+class Order implements Timestampable, TotalInterface
 {
 
     /**
@@ -22,62 +21,49 @@ class Order extends Timestampable
     private $id;
 
     /**
-     * @var Product
+     * @var Cart
      */
-    private $product;
+    private $cart;
 
     /**
-     * @var int
+     * @var OrderedItemsCollection
      */
-    private $quantity;
+    private $orderedItemsCollection;
 
     /**
-     * @var TaxInterface
+     * @var Customer
      */
-    private $tax;
+    private $customer;
 
     /**
-     * @todo implement unique number
-     *
-     * @var string
+     * @var \DateTime
      */
-    private $number;
+    private $createdAt;
 
 
     /**
      * Order constructor.
+     * @param Cart $cart
      *
-     * @param Product $product
-     * @param int $quantity
-     * @param string $country
-     *
-     * @throws \Exception
+     * @throws EmptyCartException
+     * @throws InvalidCartException
      */
-    public function __construct(Product $product, int $quantity, string $country)
+    public function __construct(Cart $cart)
     {
-        parent::__construct();
-
-        // Zamówienie składa się zazwyczaj z elementów zamówienia
-        $this->product  = $product;
-        $this->quantity = $quantity;
-
-        // Mógłbyś mieć metodę w stylu $product->reduceQuantity(5) i to w niej zawrzeć logikę walidacji.
-        // Chyba, że zakładasz w swojej domenie to, aby stan magazynu był ujemny
-        if ($quantity > $product->getQuantity()) {
-            throw new \InvalidArgumentException('Product is not available with provided quantity');
+        if ($cart->isEmpty()) {
+            throw new EmptyCartException('Cannot order empty cart');
+        }
+        if (!$cart->isValid()) {
+            throw new InvalidCartException('Cannot order invalid cart');
         }
 
-        // Nazwa tej metody nic mi nie mówi w kontekście Product.
-        // Trochę też robi Ci się coupling - Produkt wie o Zamówieniu (orderQuantity), a nie powinien.
-        $product->orderQuantity($quantity);
+        $this->cart     = $cart;
+        $this->customer = $cart->getCustomer();
+        $this->orderedItemsCollection = $cart->getOrderedItemsCollection();
 
-        // Może być też EU - w razie dojścia nowej strategii musisz znowu zmieniać kod klasy zamówienia i modyfikować testy
-        // Zastanów się jak to zrobić lepiej :)
-        if ($country === Country::PL) {
-            $this->tax = new TaxPL();
-        } else {
-            $this->tax = new TaxForeign();
-        }
+        $this->createdAt = new \DateTime();
+
+        $this->reduceProductsQuantity();
     }
 
     /**
@@ -89,27 +75,35 @@ class Order extends Timestampable
     }
 
     /**
-     * @return Product
+     * @return Cart
      */
-    public function getProduct(): Product
+    public function getCart(): Cart
     {
-        return $this->product;
+        return $this->cart;
     }
 
     /**
-     * @return int
+     * @return OrderedItemsCollection
      */
-    public function getQuantity(): int
+    public function getOrderedItemsCollection(): OrderedItemsCollection
     {
-        return $this->quantity;
+        return $this->orderedItemsCollection;
     }
 
     /**
-     * @return float
+     * @return Customer
      */
-    public function getTotalGross(): float
+    public function getCustomer(): Customer
     {
-        return $this->getTotalNet() + $this->getTax();
+        return $this->customer;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
     }
 
     /**
@@ -117,17 +111,30 @@ class Order extends Timestampable
      */
     public function getTotalNet(): float
     {
-
-        return $this->quantity * $this->product->getPrice();
+        return $this->cart->getTotalNet();
     }
 
     /**
      * @return float
      */
-    public function getTax(): float
+    public function getTotalGross(): float
     {
-      // Podatek nie "liczy", tylko bardziej "wylicza" - bliżej mu do calculate niż do count
-        return $this->tax->count( $this->getTotalNet() );
+        return $this->cart->getTotalGross();
+    }
+
+    /**
+     * @return float
+     */
+    public function getTaxPrice(): float
+    {
+        return $this->cart->getTaxPrice();
+    }
+
+    private function reduceProductsQuantity(): void
+    {
+        foreach ($this->orderedItemsCollection as $item) {
+            $item->getProduct()->reduceQuantity($item->getQuantity());
+        }
     }
 
 }
