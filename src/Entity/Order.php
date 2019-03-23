@@ -62,6 +62,8 @@ class Order implements Timestampable, TotalInterface
         $this->orderedItemsCollection = $cart->getOrderedItemsCollection();
 
         $this->createdAt = new \DateTime();
+
+        $this->reduceProductsQuantity();
     }
 
     /**
@@ -97,14 +99,6 @@ class Order implements Timestampable, TotalInterface
     }
 
     /**
-     * @return string
-     */
-    public function getNumber(): string
-    {
-        return $this->number;
-    }
-
-    /**
      * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
@@ -134,6 +128,13 @@ class Order implements Timestampable, TotalInterface
     public function getTaxPrice(): float
     {
         return $this->cart->getTaxPrice();
+    }
+
+    private function reduceProductsQuantity(): void
+    {
+        foreach ($this->orderedItemsCollection as $item) {
+            $item->getProduct()->reduceQuantity($item->getQuantity());
+        }
     }
 
 }

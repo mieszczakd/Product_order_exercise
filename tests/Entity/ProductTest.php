@@ -24,10 +24,25 @@ class ProductTest extends TestCase
         $product = new Product('Samsung', 1000, 0.23, -20);
     }
 
+    public function testReduceQuantity()
+    {
+        $product = new Product('Samsung', 1000, 0.23, 100);
+        $product->reduceQuantity(20);
+
+        $this->assertEquals(80, $product->getQuantity());
+    }
+
     public function testExceptionIfInvalidVatGiven(): void
     {
         $this->expectException(InvalidVatException::class);
         $product = new Product('Samsung', 1000, 23, 100);
+    }
+
+    public function testExceptionIfReducedQuantityIsGreaterThanProductQuantity(): void
+    {
+        $this->expectException(ProductNegativeQuantityException::class);
+        $product = new Product('Samsung', 1000, 0.23, 100);
+        $product->reduceQuantity(101);
     }
 
 }

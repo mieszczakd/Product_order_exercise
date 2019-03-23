@@ -4,7 +4,6 @@ declare(strict_types=1);
 use PHPUnit\Framework\TestCase;
 use App\Entity\Product;
 use App\Entity\OrderedItem;
-use App\Exception\ProductNegativeQuantityException;
 use App\Entity\Customer;
 use App\Entity\Address;
 
@@ -57,18 +56,12 @@ class OrderedItemTest extends TestCase
         $this->assertEquals(2001.98, $orderedItem->getTotalGross());
     }
 
-//    public function testExceptionIfNegativeQuantityGiven(): void
-//    {
-//        $this->expectException(ProductNegativeQuantityException::class);
-//        $orderedItem = new OrderedItem($this->product, -1, $this->foreignCustomer);
-//    }
-
     public function testErrorIfNonProductGiven(): void
     {
         $orderedItem = new OrderedItem(null, 2, $this->foreignCustomer);
 
         $this->assertFalse($orderedItem->isValid());
-//        $this->assertEquals('', $orderedItem->getErrors());
+        $this->assertTrue($orderedItem->hasError('Product is not available'));
     }
 
     public function testErrorIfNegativeQuantityGiven(): void
@@ -76,7 +69,15 @@ class OrderedItemTest extends TestCase
         $orderedItem = new OrderedItem($this->product, -1, $this->foreignCustomer);
 
         $this->assertFalse($orderedItem->isValid());
-//        $this->assertEquals('', $orderedItem->getErrors());
+        $this->assertTrue($orderedItem->hasError('Cannot order product with negative quantity'));
+    }
+
+    public function testErrorIfQuantityIsGreaterThanProductQuantity(): void
+    {
+        $orderedItem = new OrderedItem($this->product, 101, $this->foreignCustomer);
+
+        $this->assertFalse($orderedItem->isValid());
+        $this->assertTrue($orderedItem->hasError('Product is not available with provided quantity'));
     }
 
 }

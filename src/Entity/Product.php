@@ -136,6 +136,10 @@ class Product implements Timestampable
      */
     public function reduceQuantity(int $orderedQuantity)
     {
+        if ($this->quantity < $orderedQuantity) {
+            throw new ProductNegativeQuantityException('Cannot reduce product quantity to negative value');
+        }
+
         $this->quantity  = $this->quantity - $orderedQuantity;
         $this->updatedAt = new \DateTime();
     }

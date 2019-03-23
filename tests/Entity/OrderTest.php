@@ -9,6 +9,8 @@ use App\Entity\Address;
 use App\Entity\Cart;
 use App\Entity\OrderedItem;
 use App\Entity\Order;
+use App\Exception\EmptyCartException;
+use App\Exception\InvalidCartException;
 
 
 class OrderTest extends TestCase
@@ -57,6 +59,8 @@ class OrderTest extends TestCase
         $this->assertEquals(713.68, $order->getTaxPrice());
         $this->assertEquals(3102.9, $order->getTotalNet());
         $this->assertEquals(3816.58, $order->getTotalGross());
+        $this->assertEquals(98, $this->products[0]->getQuantity());
+        $this->assertEquals(98, $this->products[1]->getQuantity());
     }
 
     public function testOrderByForeignCustomer(): void
@@ -74,6 +78,23 @@ class OrderTest extends TestCase
         $this->assertEquals(0, $order->getTaxPrice());
         $this->assertEquals(3102.9, $order->getTotalNet());
         $this->assertEquals(3102.9, $order->getTotalGross());
+        $this->assertEquals(98, $this->products[0]->getQuantity());
+        $this->assertEquals(98, $this->products[1]->getQuantity());
+    }
+
+    public function testExceptionIfOrderEmptyCart()
+    {
+        $this->expectException(EmptyCartException::class);
+        $cart  = new Cart($this->polishCustomer);
+        $order = OrderFactory::create($cart);
+    }
+
+    public function testExceptionIfOrderInvalidCart()
+    {
+        $this->expectException(InvalidCartException::class);
+        $cart  = new Cart($this->polishCustomer);
+        $cart->addItem(new OrderedItem($this->products[0], 101, $this->polishCustomer));
+        $order = OrderFactory::create($cart);
     }
 
 }
