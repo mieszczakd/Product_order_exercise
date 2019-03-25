@@ -25,6 +25,7 @@ class OrderFactory
      */
     static public function create(Cart $cart): Order
     {
+       // Lepszy byłby Order::fromCart($cart) jako named constructor
         return new Order($cart);
     }
 }

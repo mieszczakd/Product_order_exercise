@@ -6,7 +6,7 @@ use App\Entity\Customer;
 use App\Entity\Address;
 use App\Exception\InvalidEmailException;
 
-
+// Trochę chudziutki ten test
 class CustomerTest extends TestCase
 {
     public function testCreate(): void

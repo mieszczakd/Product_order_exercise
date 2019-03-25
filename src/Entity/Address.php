@@ -65,6 +65,7 @@ class Address implements AddressInterface
 
     private function chooseTaxStrategy()
     {
+      // Wybór strategii w złym miejscu - powinien być poza Adresem
         switch ($this->country) {
             case self::PL:
                 $this->taxStrategy = new TaxPL();

@@ -35,7 +35,7 @@ class CartTest extends TestCase
             new Product('Samsung', 1000.99, 0.23, 100),
             new Product('Asus', 550.46, 0.23, 100),
         ];
-
+        //Zamiast wartości, można użyć constów: Country::POLAND;
         $this->polishCustomer  = new Customer('test@test.com', new Address('Konwaliowa 13', '34-300', 'Żywiec', 'PL'));
         $this->foreignCustomer = new Customer('test@test.com', new Address('Hasičská 2', '018 41', 'Dubnica nad Váhom', 'SK'));
     }
@@ -46,6 +46,16 @@ class CartTest extends TestCase
 
         foreach ($this->products as $product) {
             /** @var Product $product */
+
+            // Tutaj trochę pomieszanie pojęć.
+            // Cart i OrderItem - Koszyk to jedno, element zamówienia do drugie.
+            // Te pojęcia nie powinny być mieszane.
+
+            // Również nie wywoływałbym tutaj jawnie tworzenia obiektu "orderItem"
+            // Powinien być ukryty wewnątrz obiektu Cart/Order
+            // Lepiej $cart->addItem($produt, 2)
+
+            // Dwa - klient nie jest częścią elementu zamówienia, tylko zamówienia per se
             $cart->addItem(new OrderedItem($product, 2, $this->polishCustomer));
         }
 

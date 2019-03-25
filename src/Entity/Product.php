@@ -49,8 +49,6 @@ class Product implements Timestampable
 
 
     /**
-     * Product constructor.
-     *
      * @param string $name
      * @param float $price
      * @param float $vat
@@ -63,6 +61,7 @@ class Product implements Timestampable
         if ($quantity < 0) {
             throw new ProductNegativeQuantityException('Cannot create product with negative quantity');
         }
+
         if ($vat < 0 || $vat > 1) {
             throw new InvalidVatException('Vat value should be between 0 and 1');
         }

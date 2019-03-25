@@ -7,6 +7,8 @@ namespace App\Entity\Address;
  * Interface AddressInterface
  * @package App\Entity\Address
  */
+
+ // Chyba za daleko poszedłeś z tym dziedziczeniem interfaceów - zupełnie niepotrzebna abstrakcja na Country
 interface AddressInterface extends CountryInterface
 {
     /**
