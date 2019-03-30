@@ -5,7 +5,8 @@ use PHPUnit\Framework\TestCase;
 use App\Factory\OrderFactory;
 use App\Entity\Product;
 use App\Entity\Customer;
-use App\Entity\Address;
+use App\Entity\Address\Address;
+use App\Entity\Country;
 use App\Entity\Cart;
 use App\Entity\OrderedItem;
 use App\Entity\Order;
@@ -40,8 +41,8 @@ class OrderTest extends TestCase
             new Product('Asus', 550.46, 0.23, 100),
         ];
 
-        $this->polishCustomer  = new Customer('test@test.com', new Address('Konwaliowa 13', '34-300', 'Żywiec', 'PL'));
-        $this->foreignCustomer = new Customer('test@test.com', new Address('Hasičská 2', '018 41', 'Dubnica nad Váhom', 'SK'));
+        $this->polishCustomer  = new Customer('test@test.com', new Address('Konwaliowa 13', '34-300', 'Żywiec', new Country('Poland', 'PL')));
+        $this->foreignCustomer = new Customer('test@test.com', new Address('Jørgen Moes gate 9', '4011', 'Stavanger', new Country('Norway', 'NO')));
     }
 
     public function testOrderByPolishCustomer(): void

@@ -4,7 +4,7 @@ namespace App\Factory;
 
 use App\Entity\Cart;
 use App\Entity\Order;
-use App\Exception\EmptyCartException;
+use App\Exception\CartException;
 use App\Exception\InvalidCartException;
 
 
@@ -20,7 +20,7 @@ class OrderFactory
      *
      * @return Order
      *
-     * @throws EmptyCartException
+     * @throws CartException
      * @throws InvalidCartException
      */
     static public function create(Cart $cart): Order

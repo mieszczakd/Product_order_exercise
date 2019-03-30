@@ -2,14 +2,14 @@
 
 namespace App\Entity\Address;
 
+use App\Entity\Country;
+
 
 /**
  * Interface AddressInterface
  * @package App\Entity\Address
  */
-
- // Chyba za daleko poszedłeś z tym dziedziczeniem interfaceów - zupełnie niepotrzebna abstrakcja na Country
-interface AddressInterface extends CountryInterface
+interface AddressInterface
 {
     /**
      * @return string
@@ -25,4 +25,9 @@ interface AddressInterface extends CountryInterface
      * @return string
      */
     public function getCity(): string;
+
+    /**
+     * @return Country
+     */
+    public function getCountry(): Country;
 }

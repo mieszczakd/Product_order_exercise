@@ -2,9 +2,12 @@
 
 namespace App\Entity;
 
-
+use App\Entity\Address\Address;
 use App\Entity\Tax\TaxInterface;
+use App\Entity\Tax\TaxNP;
+use App\Entity\Tax\TaxPL;
 use App\Exception\InvalidEmailException;
+
 
 /**
  * Class Customer
@@ -22,6 +25,11 @@ class Customer
      */
     private $address;
 
+    /**
+     * @var TaxInterface
+     */
+    private $taxStrategy;
+
 
     /**
      * @param string $email
@@ -38,6 +46,14 @@ class Customer
 
         $this->email   = $email;
         $this->address = $address;
+
+        if ($address->getCountry()->isPL()) {
+            $this->taxStrategy = new TaxPL();
+        } elseif ($address->getCountry()->isEU()) {
+            $this->taxStrategy = new TaxPL();
+        } else {
+            $this->taxStrategy = new TaxNP();
+        }
     }
 
     /**
@@ -61,6 +77,6 @@ class Customer
      */
     public function getTaxStrategy(): TaxInterface
     {
-        return $this->address->getTaxStrategy();
+        return $this->taxStrategy;
     }
 }

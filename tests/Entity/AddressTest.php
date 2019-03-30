@@ -2,30 +2,43 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use App\Entity\Tax\TaxPL;
-use App\Entity\Tax\TaxNP;
-use App\Entity\Address;
+use App\Entity\Address\Address;
+use App\Entity\Country;
 
 
 class AddressTest extends TestCase
 {
     public function testCreatePolishAddress(): void
     {
-        $address = new Address('Konwaliowa 13', '34-300', 'Żywiec', 'PL');
+        $address = new Address('Konwaliowa 13', '34-300', 'Żywiec', new Country('Poland', 'PL'));
 
-        // Strategia wyboru powinna być dobrana w oparciu o kraj, ale to nie jest odpowiedzialność klasy Address
-        // Odpowiedzialnością adresu jest trzymanie informacji adresowych, nie musi (a nawet nie może!) wiedzieć niczego nt strategii rozliczenia zamówienia
-        // Adres może zostać użyty w innym kontekście, który nie ma nic wspólnego z zamówieniami
-        $this->assertInstanceOf(TaxPL::class, $address->getTaxStrategy());
+        $this->assertInstanceOf(Address::class, $address);
+        $this->assertEquals('Konwaliowa 13', $address->getStreet());
+        $this->assertEquals('34-300', $address->getZip());
+        $this->assertEquals('Żywiec', $address->getCity());
+        $this->assertInstanceOf(Country::class, $address->getCountry());
     }
 
-
-    // Brakuje mi jeszcze jednego przypadku, isEU - pisałem Ci chyba o tym w poprzednim MR
-    // VAT liczymy inaczej dla PL, inaczej dla EU i inaczej dla krajów z poza UE
-    public function testCreateForeignAddress(): void
+    public function testCreateEuropeanAddress(): void
     {
-        $address = new Address('Hasičská 2', '018 41', 'Dubnica nad Váhom', 'SK');
-        $this->assertInstanceOf(TaxNP::class, $address->getTaxStrategy());
+        $address = new Address('Hasičská 2', '018 41', 'Dubnica nad Váhom', new Country('Slovakia', 'SK'));
+
+        $this->assertInstanceOf(Address::class, $address);
+        $this->assertEquals('Hasičská 2', $address->getStreet());
+        $this->assertEquals('018 41', $address->getZip());
+        $this->assertEquals('Dubnica nad Váhom', $address->getCity());
+        $this->assertInstanceOf(Country::class, $address->getCountry());
+    }
+
+    public function testCreateAddressOutsideEU(): void
+    {
+        $address = new Address('Jørgen Moes gate 9', '4011', 'Stavanger', new Country('Norway', 'NO'));
+
+        $this->assertInstanceOf(Address::class, $address);
+        $this->assertEquals('Jørgen Moes gate 9', $address->getStreet());
+        $this->assertEquals('4011', $address->getZip());
+        $this->assertEquals('Stavanger', $address->getCity());
+        $this->assertInstanceOf(Country::class, $address->getCountry());
     }
 
 }

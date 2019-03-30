@@ -14,10 +14,10 @@ class ProductTest extends TestCase
         $product = new Product('Samsung', 1000, 0.23, 100);
         $this->assertInstanceOf(Product::class, $product);
 
-        // Zmienię w klasie wartości zwracane i ten test będzie poprawnie przechodził.
-        // Skoro znasz DOKŁADNIE jakie dane mają być zwracane - oczekuj ich w teście
-        // Jeśli byłyby w jakiś sposób generowane wartości i nie byłbyś ich pewny - wtedy tak, warto chociaż sprawdzić typ danych
-        $this->assertIsFloat($product->getPrice());
+        $this->assertEquals('Samsung', $product->getName());
+        $this->assertEquals(1000, $product->getPrice());
+        $this->assertEquals(0.23, $product->getVat());
+        $this->assertEquals(100, $product->getQuantity());
         $this->assertIsInt($product->getQuantity());
         $this->assertGreaterThan(0, $product->getQuantity());
     }

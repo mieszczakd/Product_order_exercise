@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Collection\OrderedItemsCollection;
+use App\Collection\Collection;
 
 
 /**
@@ -16,9 +16,8 @@ class Cart implements TotalInterface
      */
     private $customer;
 
-    // Jaki sens ma przygotowanie specjalnej kolekcji dla OrderItems????
     /**
-     * @var OrderedItemsCollection
+     * @var Collection
      */
     private $orderedItemsCollection;
 
@@ -30,7 +29,7 @@ class Cart implements TotalInterface
     public function __construct(Customer $customer)
     {
         $this->customer               = $customer;
-        $this->orderedItemsCollection = new OrderedItemsCollection([]);
+        $this->orderedItemsCollection = new Collection([]);
     }
 
     /**
@@ -42,9 +41,9 @@ class Cart implements TotalInterface
     }
 
     /**
-     * @return OrderedItemsCollection
+     * @return Collection
      */
-    public function getOrderedItemsCollection(): OrderedItemsCollection
+    public function getOrderedItemsCollection(): Collection
     {
         return $this->orderedItemsCollection;
     }

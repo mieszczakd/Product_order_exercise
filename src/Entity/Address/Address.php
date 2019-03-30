@@ -1,11 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Address;
 
-use App\Entity\Address\AddressInterface;
-use App\Entity\Tax\TaxNP;
-use App\Entity\Tax\TaxInterface;
-use App\Entity\Tax\TaxPL;
+use App\Entity\Country;
 
 
 /**
@@ -36,44 +33,25 @@ class Address implements AddressInterface
     private $city;
 
     /**
-     * @var string
+     * @var Country
      */
     private $country;
 
-    /**
-     * @var TaxInterface
-     */
-    private $taxStrategy;
-
 
     /**
-     * Address constructor.
      * @param string $street
      * @param string $zip
      * @param string $city
-     * @param string $country
+     * @param Country $country
      */
-    public function __construct(string $street, string $zip, string $city, string $country)
+    public function __construct(string $street, string $zip, string $city, Country $country)
     {
         $this->street  = $street;
         $this->zip     = $zip;
         $this->city    = $city;
         $this->country = $country;
-
-        $this->chooseTaxStrategy();
     }
 
-    private function chooseTaxStrategy()
-    {
-      // Wybór strategii w złym miejscu - powinien być poza Adresem
-        switch ($this->country) {
-            case self::PL:
-                $this->taxStrategy = new TaxPL();
-                break;
-            default:
-                $this->taxStrategy = new TaxNP();
-        }
-    }
 
     /**
      * @return int
@@ -108,18 +86,11 @@ class Address implements AddressInterface
     }
 
     /**
-     * @return string
+     * @return Country
      */
-    public function getCountry(): string
+    public function getCountry(): Country
     {
         return $this->country;
     }
 
-    /**
-     * @return TaxInterface
-     */
-    public function getTaxStrategy(): TaxInterface
-    {
-        return $this->taxStrategy;
-    }
 }

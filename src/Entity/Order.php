@@ -2,8 +2,7 @@
 
 namespace App\Entity;
 
-use App\Collection\OrderedItemsCollection;
-use App\Entity\Customer;
+use App\Collection\Collection;
 use App\Exception\EmptyCartException;
 use App\Exception\InvalidCartException;
 
@@ -26,14 +25,9 @@ class Order implements Timestampable, TotalInterface
     private $cart;
 
     /**
-     * @var OrderedItemsCollection
+     * @var Collection
      */
     private $orderedItemsCollection;
-
-    /**
-     * @var Customer
-     */
-    private $customer;
 
     /**
      * @var \DateTime
@@ -55,10 +49,7 @@ class Order implements Timestampable, TotalInterface
             throw new InvalidCartException('Cannot order invalid cart');
         }
 
-        $this->cart     = $cart;
-
-       // $cart chyba nie powinien mieć Customera w sobie.
-        $this->customer = $cart->getCustomer();
+        $this->cart = $cart;
         $this->orderedItemsCollection = $cart->getOrderedItemsCollection();
 
         $this->createdAt = new \DateTime();
@@ -83,19 +74,11 @@ class Order implements Timestampable, TotalInterface
     }
 
     /**
-     * @return OrderedItemsCollection
+     * @return Collection
      */
-    public function getOrderedItemsCollection(): OrderedItemsCollection
+    public function getOrderedItemsCollection(): Collection
     {
         return $this->orderedItemsCollection;
-    }
-
-    /**
-     * @return Customer
-     */
-    public function getCustomer(): Customer
-    {
-        return $this->customer;
     }
 
     /**
