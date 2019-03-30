@@ -39,7 +39,6 @@ class OrderedItem implements TotalInterface
 
 
     /**
-     * OrderedItem constructor.
      * @param Product|null $product
      * @param int $quantity
      * @param Customer $customer

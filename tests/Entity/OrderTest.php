@@ -50,9 +50,14 @@ class OrderTest extends TestCase
 
         foreach ($this->products as $product) {
             /** @var Product $product */
+            // Jak już wspominałem - tutaj powinien być dodawany Product z dodatkowymi informacjami, nie OrderItem
             $cart->addItem(new OrderedItem($product, 2, $this->polishCustomer));
         }
 
+        // PRAWIE super. fajnie że tworzysz zamównienie przez koszyk i korzystasz ze wzorca fabryki
+        // Co można było zrobić lepiej? Zrobić fabrykę jako service i ją wstrzykiwać.
+        // Nie twórz sztywnych zależności. Jeśli już statyczny, to tylko konstruktor
+        // Poczytaj na temat "named constructor", w tym przypadku wyglądałoby to tak: $order = Order::fromCart($cart);
         $order = OrderFactory::create($cart);
 
         $this->assertInstanceOf(Order::class, $order);
@@ -84,6 +89,14 @@ class OrderTest extends TestCase
 
     public function testExceptionIfOrderEmptyCart()
     {
+      // Własne klasy wyjątków - awsome! :)
+      // A teraz sprzedam Ci jeszcze dwa tipy.
+      // 1) Sam exception to za mało - brakuje Ci komunikatu błedu
+      // 2) Sam tekst to też często za mało - warto dodawać kody błędu
+
+      // I teraz - jak to zrobić "fajnie" - np właśnie przez named constructor
+      // throw CartException::empty() -> co się tutaj stało - tworzysz KLASĘ wyjątku, a nie wyjątek dla tego jednego, szczególnego przypadku
+      // Dzięki temu, że masz dedykowany konstruktor, możesz sobie w tej metodzie konsukcyjnej zdefiniować message oraz code dla tego wyjątku
         $this->expectException(EmptyCartException::class);
         $cart  = new Cart($this->polishCustomer);
         $order = OrderFactory::create($cart);
@@ -91,6 +104,8 @@ class OrderTest extends TestCase
 
     public function testExceptionIfOrderInvalidCart()
     {
+      // InvalidCart - to nic nie znaczy. Jest nieporawny - ale DLACZEGO?
+      // Brakuje informacji kontekstowej - stwierdzenie, że "nie działa" to za mało
         $this->expectException(InvalidCartException::class);
         $cart  = new Cart($this->polishCustomer);
         $cart->addItem(new OrderedItem($this->products[0], 101, $this->polishCustomer));

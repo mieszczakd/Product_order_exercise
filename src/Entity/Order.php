@@ -40,9 +40,7 @@ class Order implements Timestampable, TotalInterface
      */
     private $createdAt;
 
-
     /**
-     * Order constructor.
      * @param Cart $cart
      *
      * @throws EmptyCartException
@@ -58,6 +56,8 @@ class Order implements Timestampable, TotalInterface
         }
 
         $this->cart     = $cart;
+
+       // $cart chyba nie powinien mieć Customera w sobie.
         $this->customer = $cart->getCustomer();
         $this->orderedItemsCollection = $cart->getOrderedItemsCollection();
 
@@ -132,6 +132,7 @@ class Order implements Timestampable, TotalInterface
 
     private function reduceProductsQuantity(): void
     {
+      //To powinno dziać się na bieżąco podczas tworzenia obiektów OrderItem, a nie w osobnym przebiegu
         foreach ($this->orderedItemsCollection as $item) {
             $item->getProduct()->reduceQuantity($item->getQuantity());
         }

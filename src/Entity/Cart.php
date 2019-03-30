@@ -16,6 +16,7 @@ class Cart implements TotalInterface
      */
     private $customer;
 
+    // Jaki sens ma przygotowanie specjalnej kolekcji dla OrderItems????
     /**
      * @var OrderedItemsCollection
      */
@@ -55,12 +56,18 @@ class Cart implements TotalInterface
     public function addItem(OrderedItem $item): Cart
     {
         $this->orderedItemsCollection->add($item);
+
+        // Nie zwracaj $this - tzw FluentInteface są akceptowalne tylko dla tzw Builderów
         return $this;
     }
 
     /**
      * @return bool
      */
+
+   // Ta metoda jest zbędna
+   // Walidacja danych powinna odbyć się na poziomie tworzenia obiektu
+   // Metoda isValid w tym przypadku jęst błędna. To nie jest odpowiedzialność biznesowe tej klasy, aby mówić, czy jest, czy nie jest poprawna
     public function isValid(): bool
     {
         foreach ($this->orderedItemsCollection as $item) {
@@ -105,11 +112,11 @@ class Cart implements TotalInterface
         }
 
         return $total;
-    }
+      }
 
     /**
-     * @return float
-     */
+    * @return float
+    */
     public function getTaxPrice(): float
     {
         $total = 0;

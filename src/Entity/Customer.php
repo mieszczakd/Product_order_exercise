@@ -24,7 +24,6 @@ class Customer
 
 
     /**
-     * Customer constructor.
      * @param string $email
      * @param Address $address
      *
@@ -32,6 +31,7 @@ class Customer
      */
     public function __construct(string $email, Address $address)
     {
+        // W teście opisałem Ci jak można inaczej konstruować Exception
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidEmailException();
         }

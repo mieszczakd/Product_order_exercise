@@ -40,6 +40,11 @@ class OrderedItemTest extends TestCase
     {
         $orderedItem = new OrderedItem($this->product, 2, $this->polishCustomer);
 
+        // Już wiem, dlaczego był Ci potrzebny Customer w OderItem
+        // Poczytaj sobie nt Agretatów (Aggregate) i Aggregate Root
+
+        // Order w tym przypadku byłby agregatem -> a item powinien być w nim zamknięty i niedostępny jako obiekt poza zamówieniem
+        // Wtedy masz zawsze pewność, że licząć wartość vat jest dostęp do obiektu Klienta
         $this->assertInstanceOf(OrderedItem::class, $orderedItem);
         $this->assertEquals(460.46, $orderedItem->getTaxPrice());
         $this->assertEquals(2001.98, $orderedItem->getTotalNet());
@@ -58,7 +63,9 @@ class OrderedItemTest extends TestCase
 
     public function testErrorIfNonProductGiven(): void
     {
+        // OderItem nie powinien być w ogóle testowany - taki obiekt nie powinien zostać utworzony
         $orderedItem = new OrderedItem(null, 2, $this->foreignCustomer);
+
 
         $this->assertFalse($orderedItem->isValid());
         $this->assertTrue($orderedItem->hasError('Product is not available'));
@@ -66,12 +73,19 @@ class OrderedItemTest extends TestCase
 
     public function testErrorIfNegativeQuantityGiven(): void
     {
+
+      // To samo.
+      // Walidacja na poziomie tworzenia obiektu, a nie już po stworzeniu
+      // Poczytaj o tzw. niezmiennikach (invariants)
         $orderedItem = new OrderedItem($this->product, -1, $this->foreignCustomer);
 
         $this->assertFalse($orderedItem->isValid());
         $this->assertTrue($orderedItem->hasError('Cannot order product with negative quantity'));
     }
 
+    // Jak wyżej - akurat to powinno być testowane na poziomie tworzenia zamówienia z elementów koszyka
+    // Dlaczego - ponieważ w trakcie zakupów ilość dostępnych zasobów może się zmienić :)
+    // Ale na 1000% ten niezmiennik nie powinien znaleźć się w tym obiekcie
     public function testErrorIfQuantityIsGreaterThanProductQuantity(): void
     {
         $orderedItem = new OrderedItem($this->product, 101, $this->foreignCustomer);
